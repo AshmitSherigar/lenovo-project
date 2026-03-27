@@ -5,9 +5,9 @@ import numpy as np
 
 app = FastAPI(title="Server Power Anomaly API")
 
-model = joblib.load('iforest_model.joblib')
-scaler = joblib.load('scaler.joblib')
-threshold = joblib.load('threshold.joblib')
+model = joblib.load('../machinelearning/models/iforest_model.joblib')
+scaler = joblib.load('../machinelearning/models/scaler.joblib')
+threshold = joblib.load('../machinelearning/models/threshold.joblib')
 
 class ServerMetrics(BaseModel):
     cpu_util: float

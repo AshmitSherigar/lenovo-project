@@ -33,5 +33,5 @@ fs.createReadStream(filePath)
       }
 
       i = (i + 1) % data.length;
-    }, 1000);
+    }, 5000);
   });
