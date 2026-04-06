@@ -11,8 +11,8 @@ const transporter = nodemailer.createTransport({
 const sendAlertEmail = async (alert) => {
   try {
     await transporter.sendMail({
-      from: "sherigarashmit@gmail.com",
-      to: "2024is_ashmitasherigar_a@nie.ac.in",
+      from: "ananths4798@gmail.com",
+      to: "2024is_ananths_a@nie.ac.in",
       subject: "Power Alert Detected",
       text: `
             Server: ${alert.serverId}
