@@ -14,10 +14,10 @@ import {
 } from "recharts";
 
 const severityColors = {
-  high: "#ef4444",    // red-500
-  medium: "#f59e0b",  // amber-500
-  low: "#3b82f6",     // blue-500
-  unknown: "#10b981", // emerald-500
+  high: "#ef4444",
+  medium: "#f59e0b",
+  low: "#3b82f6",
+  unknown: "#10b981",
 };
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -25,7 +25,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     return (
       <div className="panel" style={{ padding: "0.75rem 1.25rem", boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.3)", zIndex: 100 }}>
         <p style={{ margin: "0 0 0.75rem 0", color: "var(--text-muted)", fontSize: "0.875rem", fontWeight: 500 }}>
-          {label && !isNaN(new Date(label).getTime()) 
+          {label && !isNaN(new Date(label).getTime())
             ? new Date(label).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
             : (label ? label.charAt(0).toUpperCase() + label.slice(1) : "")}
         </p>
@@ -59,7 +59,7 @@ export const MetricCharts = ({ lineData, alerts, selectedAlert }) => {
 
   const filteredPie = alertBySeverity.filter((a) => a.value > 0);
   const totalAlerts = filteredPie.reduce((acc, curr) => acc + curr.value, 0);
-  
+
   const selectedPoint = selectedAlert ? lineData.find((d) => d.time === selectedAlert.timestamp) : null;
 
   return (
@@ -72,28 +72,28 @@ export const MetricCharts = ({ lineData, alerts, selectedAlert }) => {
           <ResponsiveContainer>
             <LineChart data={lineData} margin={{ top: 20, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-              <XAxis 
-                dataKey="time" 
-                stroke="#71717a" 
+              <XAxis
+                dataKey="time"
+                stroke="#71717a"
                 minTickGap={30}
                 tick={{ fill: "#a1a1aa", fontSize: 12 }}
                 tickLine={false}
                 axisLine={{ stroke: "#3f3f46" }}
-                tickFormatter={(t) => String(new Date(t).getFullYear()) === "1970" ? t : new Date(t).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                tickFormatter={(t) => String(new Date(t).getFullYear()) === "1970" ? t : new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               />
-              <YAxis 
-                stroke="#71717a" 
+              <YAxis
+                stroke="#71717a"
                 tick={{ fill: "#a1a1aa", fontSize: 12 }}
                 tickLine={false}
                 axisLine={{ stroke: "#3f3f46" }}
                 tickFormatter={(val) => `${val}`}
               />
               <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#52525b", strokeWidth: 1 }} />
-              
-              <Legend 
-                verticalAlign="top" 
-                align="center" 
-                iconType="plainline" 
+
+              <Legend
+                verticalAlign="top"
+                align="center"
+                iconType="plainline"
                 wrapperStyle={{ paddingBottom: "1.5rem" }}
               />
 
@@ -117,7 +117,7 @@ export const MetricCharts = ({ lineData, alerts, selectedAlert }) => {
         <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "1.25rem", fontWeight: 500, textAlign: "center", color: "var(--text-main)" }}>
           Alert Distribution
         </h2>
-        
+
         <div style={{ position: "relative", height: "340px", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
           {filteredPie.length === 0 ? (
             <div style={{ color: "var(--text-muted)" }}>No alerts available</div>
@@ -140,20 +140,26 @@ export const MetricCharts = ({ lineData, alerts, selectedAlert }) => {
                       <Cell key={`cell-${idx}`} fill={severityColors[entry.name] || "#a1a1aa"} />
                     ))}
                   </Pie>
-                  <Tooltip 
-                    cursor={{fill: 'transparent'}}
+                  <Tooltip
+                    cursor={{ fill: 'transparent' }}
                     content={<CustomTooltip />}
                   />
-                  <Legend 
-                    layout="vertical" 
-                    verticalAlign="middle" 
-                    align="right" 
+                  <Legend
+                    layout="vertical"
+                    verticalAlign="middle"
+                    align="right"
                     iconType="circle"
                     wrapperStyle={{ fontSize: "0.95rem", lineHeight: "2.5rem" }}
+                    formatter={(value, entry) => (
+                      <span style={{ color: "var(--text-main)", marginLeft: "4px" }}>
+                        <span style={{ textTransform: "capitalize" }}>{value}</span>
+                        <span style={{ color: "var(--text-muted)", marginLeft: "8px", fontWeight: 600 }}>{entry.payload?.value || 0}</span>
+                      </span>
+                    )}
                   />
                 </PieChart>
               </ResponsiveContainer>
-              
+
             </>
           )}
         </div>
