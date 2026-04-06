@@ -34,8 +34,8 @@ def load_server_model(server_id: str):
 
     try:
         model = joblib.load(os.path.join(server_path, "model.joblib"))
-        scaler = joblib.load(os.path.join(server_path, "scaler.joblib"))
-        threshold = joblib.load(os.path.join(server_path, "threshold.joblib"))
+        scaler = joblib.load(os.path.join(server_path, "scaler_2.joblib"))
+        threshold = joblib.load(os.path.join(server_path, "threshold_2.joblib"))
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Model for {server_id} not found")
 
