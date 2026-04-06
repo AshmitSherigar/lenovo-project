@@ -32,7 +32,7 @@ const createMetric = async (req, res) => {
       const alertData = {
         serverId: data.serverId,
         message: ruleAlert?.message || `ML anomaly`,
-        severity: "high",
+        severity: ruleAlert?.severity || (mlResult?.is_anomaly ? "high" : "low"),
       };
 
       await Alert.create(alertData);

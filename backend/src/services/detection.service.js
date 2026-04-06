@@ -15,7 +15,7 @@ function checkAnomaly(data) {
     return { serverId, message: "Inefficient usage", severity: "medium" };
   }
 
-  if (lastPower[serverId] && power > lastPower[serverId] * 1.5) {
+  if (lastPower[serverId] !== undefined && power > lastPower[serverId] * 1.5) {
     return { serverId, message: "Sudden spike", severity: "high" };
   }
 
