@@ -28,6 +28,7 @@ fs.createReadStream(filePath)
 
       try {
         await axios.post('http://localhost:5000/api/metrics', row);
+        console.log(`[Success] Sent metric for Server ${row.serverId} at ${new Date().toLocaleTimeString()}`);
       } catch (err) {
         console.error("POST error:", err.response?.data || err.message);
       }

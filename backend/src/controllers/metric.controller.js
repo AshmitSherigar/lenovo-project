@@ -44,6 +44,9 @@ const createMetric = async (req, res) => {
         await sendAlertEmail(alertData);
         lastAlertTime[data.serverId] = Date.now();
       }
+      
+      data.alert = alertData.message;
+      data.severity = alertData.severity;
     }
 
     if (io) {
