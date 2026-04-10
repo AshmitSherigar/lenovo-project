@@ -30,6 +30,54 @@ export const fetchAlerts = async () => {
   return safeFetch(`${apiBase}/api/alerts`);
 };
 
+export const postMetric = async (metric) => {
+  return safeFetch(`${apiBase}/api/metrics`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(metric),
+  });
+};
+
+export const postMetricBatch = async (metrics) => {
+  return safeFetch(`${apiBase}/api/metrics/batch`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(metrics),
+  });
+};
+
+export const uploadMetricsFile = async (file) => {
+  const form = new FormData();
+  form.append("file", file);
+
+  const response = await fetch(`${apiBase}/api/metrics/upload`, {
+    method: "POST",
+    body: form,
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    let json;
+    try {
+      json = JSON.parse(text);
+    } catch {
+      json = null;
+    }
+    const error = new Error(
+      `Request failed: ${response.status} ${response.statusText}`,
+    );
+    error.status = response.status;
+    error.body = json ?? text;
+    throw error;
+  }
+
+  return response.json();
+};
+
 export const createSocket = ({ onData, onError, onConnect, onDisconnect }) => {
   const socketUrl = apiBase || "http://localhost:5000";
   const socket = io(socketUrl, {

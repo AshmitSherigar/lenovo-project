@@ -1,39 +1,13 @@
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createSocket, fetchAlerts, fetchMetricsHistory } from "../api";
 import { normalizeMetric } from "../utils";
+import { toast } from "sonner";
 
 export const useDashboardData = () => {
   const [metrics, setMetrics] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  const [paused, setPaused] = useState(() => {
-    return window.localStorage.getItem("dashboard_paused") === "true";
-  });
-  
-  const [pausedAt, setPausedAt] = useState(() => {
-    const val = window.localStorage.getItem("dashboard_paused_at");
-    return val ? parseInt(val, 10) : null;
-  });
-
-  const pausedRef = useRef(paused);
-
-  useEffect(() => {
-    pausedRef.current = paused;
-    window.localStorage.setItem("dashboard_paused", paused.toString());
-    
-    if (paused) {
-      if (!pausedAt) {
-        const now = Date.now();
-        setPausedAt(now);
-        window.localStorage.setItem("dashboard_paused_at", now.toString());
-      }
-    } else {
-      setPausedAt(null);
-      window.localStorage.removeItem("dashboard_paused_at");
-    }
-  }, [paused, pausedAt]);
 
   useEffect(() => {
     let socket;
@@ -45,38 +19,23 @@ export const useDashboardData = () => {
           fetchAlerts(),
         ]);
 
-        const isCurrentlyPaused = window.localStorage.getItem("dashboard_paused") === "true";
-        const freezeTime = parseInt(window.localStorage.getItem("dashboard_paused_at"), 10);
-
         if (metricsRes.status === "fulfilled" && Array.isArray(metricsRes.value)) {
-          let loaded = metricsRes.value.map(normalizeMetric);
-          if (isCurrentlyPaused && freezeTime) {
-            loaded = loaded.filter(m => new Date(m.timestamp).getTime() <= freezeTime);
-          }
-          setMetrics(loaded);
+          setMetrics(metricsRes.value.map(normalizeMetric));
         }
 
         if (alertsRes.status === "fulfilled" && Array.isArray(alertsRes.value)) {
-          let loaded = alertsRes.value;
-          if (isCurrentlyPaused && freezeTime) {
-            loaded = loaded.filter(a => new Date(a.timestamp).getTime() <= freezeTime);
-          }
-          setAlerts(loaded);
+          setAlerts(alertsRes.value);
         }
 
-        if (
-          metricsRes.status === "rejected" ||
-          alertsRes.status === "rejected"
-        ) {
+        if (metricsRes.status === "rejected" || alertsRes.status === "rejected") {
           const errMsg = [metricsRes, alertsRes]
             .filter((x) => x.status === "rejected")
-            .map((x) => x.reason?.message || "Unknown error")
+            .map((x) => x.reason?.message || "Internal system error")
             .join("; ");
-
-          setError(`Fetch error: ${errMsg}`);
+          setError(`Unable to synchronize dashboard data: ${errMsg}`);
         }
       } catch (e) {
-        setError(e.message || "Unexpected error");
+        setError(e.message || "An unexpected error occurred during initialization");
       } finally {
         setLoading(false);
       }
@@ -86,37 +45,40 @@ export const useDashboardData = () => {
 
     socket = createSocket({
       onConnect: () => setError(null),
-      onDisconnect: () => console.info("Socket disconnected"),
-      onError: (err) =>
-        setError(err?.message || "Socket error"),
+      onDisconnect: () => console.info("Data stream interrupted"),
+      onError: (err) => setError(err?.message || "Connection failure"),
 
       onData: (incoming) => {
-        if (pausedRef.current) return;
-
         const n = normalizeMetric(incoming);
 
-        setMetrics((prev) => [
-          ...prev.slice(-199),
-          n,
-        ]);
+        setMetrics((prev) => [...prev.slice(-199), n]);
 
-        if (
-          incoming?.serverId &&
-          (incoming?.alert || incoming?.severity)
-        ) {
-          setAlerts((prev) => [
-            {
-              serverId: incoming.serverId,
-              message:
-                incoming.alert || "Realtime alert",
-              severity:
-                incoming.severity || "low",
-              timestamp:
-                incoming.timestamp ||
-                new Date().toISOString(),
-            },
-            ...prev.slice(0, 1999),
-          ]);
+        if (incoming?.serverId && (incoming?.alert || incoming?.severity)) {
+          const alertData = {
+            serverId: incoming.serverId,
+            message: incoming.alert || "Unusual behavior detected",
+            severity: incoming.severity || "low",
+            timestamp: incoming.timestamp || new Date().toISOString(),
+          };
+
+          setAlerts((prev) => [alertData, ...prev.slice(0, 1999)]);
+
+          const sev = (alertData.severity || "low").toLowerCase();
+          const time = new Date(alertData.timestamp).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          });
+
+          const description = `${alertData.message} on server ${alertData.serverId} at ${time}. Internal system logs indicate immediate attention may be needed.`;
+
+          if (sev === "high") {
+            toast.error("Critical System Alert", { description });
+          } else if (sev === "medium") {
+            toast.warning("System Warning", { description });
+          } else {
+            toast.info("System Notification", { description });
+          }
         }
       },
     });
@@ -127,11 +89,7 @@ export const useDashboardData = () => {
   }, []);
 
   const sortedMetrics = useMemo(
-    () =>
-      [...metrics].sort(
-        (a, b) =>
-          new Date(a.timestamp) - new Date(b.timestamp)
-      ),
+    () => [...metrics].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)),
     [metrics]
   );
 
@@ -147,24 +105,12 @@ export const useDashboardData = () => {
   );
 
   const alertBySeverity = useMemo(() => {
-    const counts = {
-      high: 0,
-      medium: 0,
-      low: 0,
-      unknown: 0,
-    };
-
+    const counts = { high: 0, medium: 0, low: 0, unknown: 0 };
     alerts.forEach((alert) => {
-      const sev = (
-        alert?.severity || "unknown"
-      ).toLowerCase();
-
+      const sev = (alert?.severity || "unknown").toLowerCase();
       counts[sev] = (counts[sev] ?? 0) + 1;
     });
-
-    return Object.entries(counts).map(
-      ([name, value]) => ({ name, value })
-    );
+    return Object.entries(counts).map(([name, value]) => ({ name, value }));
   }, [alerts]);
 
   return {
@@ -174,7 +120,5 @@ export const useDashboardData = () => {
     alertBySeverity,
     loading,
     error,
-    paused,
-    setPaused,
   };
 };
