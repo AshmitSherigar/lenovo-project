@@ -4,9 +4,16 @@ import joblib
 import numpy as np
 import os
 
+# Get the directory of the current script
+current_file_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_file_dir)
+file_path = os.path.join(parent_dir, r"machinelearning\models")
+# Join the directory with the relative path
+print(file_path)
+
 app = FastAPI(title="Server Power Anomaly API")
 
-BASE_MODEL_PATH = "/Users/ayushmishra06/Desktop/Lenovo/lenovo-project/models"
+BASE_MODEL_PATH = file_path
 
 models_cache = {}
 
