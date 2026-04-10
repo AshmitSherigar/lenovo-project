@@ -1,4 +1,4 @@
-export const LoadingError = ({ loading, error }) => {
+export const LoadingError = ({ loading, error, title }) => {
   if (loading) {
     return (
       <div style={{ 
@@ -25,23 +25,20 @@ export const LoadingError = ({ loading, error }) => {
   }
   
   if (error) {
+    const displayTitle = title || (typeof error === 'object' ? error.title : "Connection lost");
+    const displayMessage = typeof error === 'object' ? error.message : error;
+
     return (
-      <div className="panel" style={{
-        marginTop: "2rem",
-        padding: "1.25rem 1.5rem",
-        backgroundColor: "rgba(239, 68, 68, 0.08)",
-        borderColor: "rgba(239, 68, 68, 0.3)",
-      }}>
-        <h3 style={{ margin: "0 0 0.375rem 0", fontSize: "0.875rem", fontWeight: 600, color: "#fca5a5" }}>
-          Synchronisation failure
-        </h3>
-        <p style={{ margin: 0, fontSize: "0.8125rem", color: "var(--text-muted)" }}>
-          {error}
-        </p>
+      <div className="error-view-container">
+        <div className="error-view-content">
+          <h2 className="error-title">{displayTitle}</h2>
+          <p className="error-message">
+            {displayMessage || "We're having trouble completing this request. Please check your connection or try again."}
+          </p>
+        </div>
       </div>
     );
   }
   
   return null;
 };
-
