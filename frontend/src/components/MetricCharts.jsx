@@ -31,11 +31,10 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
       <div style={{
-        backgroundColor: "var(--bg-card)",
+        backgroundColor: "var(--bg-elevated)",
         border: "1px solid var(--border-color)",
-        borderRadius: "8px",
-        padding: "0.5rem 0.875rem",
-        boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+        borderRadius: "4px",
+        padding: "0.4rem 0.75rem",
         fontSize: "0.8125rem",
       }}>
         <p style={{ margin: "0 0 0.375rem", color: "var(--text-dim)", fontSize: "0.75rem" }}>
@@ -104,10 +103,10 @@ export const MetricCharts = ({ lineData, alerts, selectedAlert }) => {
       <div className="panel" style={{ padding: "1.25rem 1.25rem 0.75rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem" }}>
           <div>
-            <h2 style={{ margin: "0 0 0.25rem", fontSize: "0.8125rem", fontWeight: 500, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+            <h2 style={{ margin: "0 0 0.125rem", fontSize: "0.75rem", fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
               Resource Trends
             </h2>
-            <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--text-dim)" }}>Historical resource utilization across time</p>
+            <p style={{ margin: 0, fontSize: "0.6875rem", color: "var(--text-dim)" }}>Historical utilization telemetry</p>
           </div>
           <div style={{ display: "flex", gap: "0.5rem" }}>
             {Object.keys(metricColors).map(key => (
@@ -156,13 +155,13 @@ export const MetricCharts = ({ lineData, alerts, selectedAlert }) => {
               <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#27272a", strokeWidth: 1 }} />
 
               {visibleMetrics.cpu && (
-                <Line type="monotone" dataKey="cpu" name="CPU" stroke={metricColors.cpu} strokeWidth={1.5} dot={false} activeDot={{ r: 3, strokeWidth: 0 }} />
+                <Line type="monotone" dataKey="cpu" name="CPU" stroke={metricColors.cpu} strokeWidth={1} dot={false} activeDot={{ r: 2, strokeWidth: 0 }} />
               )}
               {visibleMetrics.memory && (
-                <Line type="monotone" dataKey="memory" name="Memory" stroke={metricColors.memory} strokeWidth={1.5} dot={false} activeDot={{ r: 3, strokeWidth: 0 }} />
+                <Line type="monotone" dataKey="memory" name="Memory" stroke={metricColors.memory} strokeWidth={1} dot={false} activeDot={{ r: 2, strokeWidth: 0 }} />
               )}
               {visibleMetrics.power && (
-                <Line type="monotone" dataKey="power" name="Power" stroke={metricColors.power} strokeWidth={1.5} dot={false} activeDot={{ r: 3, strokeWidth: 0 }} />
+                <Line type="monotone" dataKey="power" name="Power" stroke={metricColors.power} strokeWidth={1} dot={false} activeDot={{ r: 2, strokeWidth: 0 }} />
               )}
 
               {anomalies.map((a, i) => (

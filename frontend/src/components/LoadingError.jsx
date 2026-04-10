@@ -23,7 +23,7 @@ export const LoadingError = ({ loading, error, title }) => {
           }}
         ></div>
         <div style={{ fontSize: "0.8125rem", fontWeight: 500 }}>
-          Initializing system telemetry and analytical models...
+          Synchronizing infrastructure telemetry...
         </div>
         <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
       </div>

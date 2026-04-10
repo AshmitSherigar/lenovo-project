@@ -259,196 +259,190 @@ export const CsvAnalysisModal = ({ isOpen, onClose }) => {
         </div>
 
         <div style={{ padding: "1.5rem" }}>
-          {isAnalyzing ? (
-            <div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "1.5rem",
-                }}
-              >
-                <div>
-                  <h3
-                    style={{
-                      margin: 0,
-                      fontSize: "1rem",
-                      fontWeight: 600,
-                      color: "var(--text-main)",
-                    }}
-                  >
-                    Analysis Results
-                  </h3>
-                  <p
-                    style={{
-                      margin: "0.25rem 0 0",
-                      fontSize: "0.75rem",
-                      color: "var(--text-muted)",
-                    }}
-                  >
-                    Viewing local analysis for {localMetrics.length} records and{" "}
-                    {localAlerts.length} detected incidents.
-                  </p>
-                </div>
-                <div style={{ display: "flex", gap: "0.75rem" }}>
-                  <button className="btn" onClick={handleReset}>
-                    Analyze New File
-                  </button>
-                </div>
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1.5rem",
-                }}
-              >
-                <MetricCharts
-                  lineData={localMetrics}
-                  alerts={localAlerts}
-                  selectedAlert={null}
-                />
-                <AlertTable alerts={localAlerts} onSelect={() => {}} />
-              </div>
-            </div>
-          ) : (
-            <>
-              {mode === "upload" && (
-                <>
-                  <div
-                    className={`drag-zone ${dragOver ? "drag-over" : ""}`}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      setDragOver(true);
-                    }}
-                    onDragLeave={() => setDragOver(false)}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      setDragOver(false);
-                      handleFile(e.dataTransfer.files[0]);
-                    }}
-                    onClick={() => fileRef.current?.click()}
-                  >
-                    <input
-                      ref={fileRef}
-                      type="file"
-                      accept=".csv,.xlsx,.xls"
-                      style={{ display: "none" }}
-                      onChange={(e) => handleFile(e.target.files[0])}
-                    />
-                    <div>
-                      {uploading ? "Processing data..." : "Select or drop file"}
-                    </div>
-                  </div>
-
-                  {parseError && (
-                    <div style={{ marginTop: "1rem", color: "red" }}>
-                      {parseError}
-                    </div>
-                  )}
-                  {uploadError && (
-                    <div style={{ marginTop: "1rem", color: "red" }}>
-                      {uploadError}
-                    </div>
-                  )}
-                </>
-              )}
-
-              {mode === "manual" && (
-                <>
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
-                      gap: "1rem",
-                    }}
-                  >
-                    <input
-                      className="input-field"
-                      placeholder="Server ID"
-                      value={manualInput.serverId}
-                      onChange={(e) =>
-                        setManualInput((p) => ({
-                          ...p,
-                          serverId: e.target.value,
-                        }))
-                      }
-                    />
-                    <input
-                      className="input-field"
-                      type="number"
-                      placeholder="CPU %"
-                      value={manualInput.cpu}
-                      onChange={(e) =>
-                        setManualInput((p) => ({ ...p, cpu: e.target.value }))
-                      }
-                    />
-                    <input
-                      className="input-field"
-                      type="number"
-                      placeholder="Memory %"
-                      value={manualInput.memory}
-                      onChange={(e) =>
-                        setManualInput((p) => ({
-                          ...p,
-                          memory: e.target.value,
-                        }))
-                      }
-                    />
-                    <input
-                      className="input-field"
-                      type="number"
-                      placeholder="Power (W)"
-                      value={manualInput.power}
-                      onChange={(e) =>
-                        setManualInput((p) => ({ ...p, power: e.target.value }))
-                      }
-                    />
-                  </div>
-
-                  <button
-                    className="btn btn-primary"
-                    style={{ marginTop: "1rem", width: "100%" }}
-                    onClick={handleManualCheck}
-                  >
-                    {submitting ? "Processing..." : "Perform Diagnostic Review"}
-                  </button>
-
-                  {manualResult && (
-                    <div
+          {mode === "upload" ? (
+            isAnalyzing ? (
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "1.5rem",
+                  }}
+                >
+                  <div>
+                    <h3
                       style={{
-                        marginTop: "1rem",
-                        padding: "1rem",
-                        borderRadius: "8px",
-                        backgroundColor: sevColor[manualResult.severity]?.bg,
-                        border: `1px solid ${sevColor[manualResult.severity]?.border}`,
+                        margin: 0,
+                        fontSize: "1rem",
+                        fontWeight: 600,
+                        color: "var(--text-main)",
                       }}
                     >
-                      <div
-                        style={{
-                          fontWeight: 600,
-                          marginBottom: "0.5rem",
-                          color: sevColor[manualResult.severity]?.color,
-                        }}
-                      >
-                        Diagnostic Result: {manualResult.severity.toUpperCase()}
-                      </div>
-                      {manualResult.reasons.map((r, i) => (
-                        <div key={i} style={{ fontSize: "0.875rem" }}>
-                          • {r.text}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                      Analysis Results
+                    </h3>
+                    <p
+                      style={{
+                        margin: "0.25rem 0 0",
+                        fontSize: "0.75rem",
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      Viewing local analysis for {localMetrics.length} records
+                      and {localAlerts.length} detected incidents.
+                    </p>
+                  </div>
+                  <div style={{ display: "flex", gap: "0.75rem" }}>
+                    <button className="btn" onClick={handleReset}>
+                      Analyze New File
+                    </button>
+                  </div>
+                </div>
 
-                  {apiError && (
-                    <div style={{ marginTop: "1rem", color: "red" }}>
-                      {apiError}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1.5rem",
+                  }}
+                >
+                  <MetricCharts
+                    lineData={localMetrics}
+                    alerts={localAlerts}
+                    selectedAlert={null}
+                  />
+                  <AlertTable alerts={localAlerts} onSelect={() => {}} />
+                </div>
+              </div>
+            ) : (
+              <>
+                <div
+                  className={`drag-zone ${dragOver ? "drag-over" : ""}`}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setDragOver(true);
+                  }}
+                  onDragLeave={() => setDragOver(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setDragOver(false);
+                    handleFile(e.dataTransfer.files[0]);
+                  }}
+                  onClick={() => fileRef.current?.click()}
+                >
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept=".csv,.xlsx,.xls"
+                    style={{ display: "none" }}
+                    onChange={(e) => handleFile(e.target.files[0])}
+                  />
+                  <div>
+                    {uploading ? "Processing data..." : "Select or drop file"}
+                  </div>
+                </div>
+
+                {parseError && (
+                  <div style={{ marginTop: "1rem", color: "red" }}>
+                    {parseError}
+                  </div>
+                )}
+                {uploadError && (
+                  <div style={{ marginTop: "1rem", color: "red" }}>
+                    {uploadError}
+                  </div>
+                )}
+              </>
+            )
+          ) : (
+            <>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "1rem",
+                }}
+              >
+                <input
+                  className="input-field"
+                  placeholder="Server ID"
+                  value={manualInput.serverId}
+                  onChange={(e) =>
+                    setManualInput((p) => ({
+                      ...p,
+                      serverId: e.target.value,
+                    }))
+                  }
+                />
+                <input
+                  className="input-field"
+                  type="number"
+                  placeholder="CPU %"
+                  value={manualInput.cpu}
+                  onChange={(e) =>
+                    setManualInput((p) => ({ ...p, cpu: e.target.value }))
+                  }
+                />
+                <input
+                  className="input-field"
+                  type="number"
+                  placeholder="Memory %"
+                  value={manualInput.memory}
+                  onChange={(e) =>
+                    setManualInput((p) => ({
+                      ...p,
+                      memory: e.target.value,
+                    }))
+                  }
+                />
+                <input
+                  className="input-field"
+                  type="number"
+                  placeholder="Power (W)"
+                  value={manualInput.power}
+                  onChange={(e) =>
+                    setManualInput((p) => ({ ...p, power: e.target.value }))
+                  }
+                />
+              </div>
+
+              <button
+                className="btn btn-primary"
+                style={{ marginTop: "1rem", width: "100%" }}
+                onClick={handleManualCheck}
+              >
+                {submitting ? "Processing..." : "Perform Diagnostic Review"}
+              </button>
+
+              {manualResult && (
+                <div
+                  style={{
+                    marginTop: "1rem",
+                    padding: "1rem",
+                    borderRadius: "8px",
+                    backgroundColor: sevColor[manualResult.severity]?.bg,
+                    border: `1px solid ${sevColor[manualResult.severity]?.border}`,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      marginBottom: "0.5rem",
+                      color: sevColor[manualResult.severity]?.color,
+                    }}
+                  >
+                    Diagnostic Result: {manualResult.severity.toUpperCase()}
+                  </div>
+                  {manualResult.reasons.map((r, i) => (
+                    <div key={i} style={{ fontSize: "0.875rem" }}>
+                      • {r.text}
                     </div>
-                  )}
-                </>
+                  ))}
+                </div>
+              )}
+
+              {apiError && (
+                <div style={{ marginTop: "1rem", color: "red" }}>{apiError}</div>
               )}
             </>
           )}

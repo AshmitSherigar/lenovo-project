@@ -47,11 +47,11 @@ export const ServerRack = ({
         <h3
           style={{
             margin: 0,
-            fontSize: "0.8125rem",
-            fontWeight: 500,
+            fontSize: "0.75rem",
+            fontWeight: 600,
             color: "var(--text-muted)",
             textTransform: "uppercase",
-            letterSpacing: "0.5px",
+            letterSpacing: "0.05em",
           }}
         >
           Server Rack
@@ -73,23 +73,22 @@ export const ServerRack = ({
         <div
           onClick={() => onSelect("ALL")}
           style={{
-            padding: "0.625rem 0.875rem",
+            padding: "0.5rem 0.75rem",
             borderRadius: "6px",
             border: `1px solid ${selectedServer === "ALL" ? "var(--color-primary)" : "var(--border-color)"}`,
             backgroundColor:
               selectedServer === "ALL"
-                ? "rgba(59, 130, 246, 0.08)"
+                ? "rgba(59, 130, 246, 0.05)"
                 : "var(--bg-card)",
             cursor: "pointer",
             textAlign: "center",
-            fontWeight: 500,
-            fontSize: "0.8125rem",
+            fontWeight: 600,
+            fontSize: "0.75rem",
             color:
               selectedServer === "ALL"
                 ? "var(--color-primary)"
                 : "var(--text-muted)",
             marginBottom: "0.25rem",
-            transition: "all 0.15s ease",
           }}
         >
           View Cluster Overview
@@ -108,28 +107,13 @@ export const ServerRack = ({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                padding: "0.75rem 0.875rem",
+                padding: "0.625rem 0.75rem",
                 backgroundColor: isSelected
-                  ? "rgba(255,255,255,0.04)"
+                  ? "rgba(255,255,255,0.02)"
                   : "var(--bg-card)",
                 border: `1px solid ${isSelected ? "var(--color-primary)" : "var(--border-color)"}`,
                 borderRadius: "6px",
                 cursor: "pointer",
-                transition: "all 0.15s ease, transform 0.15s ease",
-                transform: isSelected ? "scale(1)" : "scale(1)",
-              }}
-              onMouseOver={(e) => {
-                if (!isSelected)
-                  e.currentTarget.style.transform = "translateX(3px)";
-                e.currentTarget.style.borderColor = isSelected
-                  ? "var(--color-primary)"
-                  : "#3f3f46";
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-                e.currentTarget.style.borderColor = isSelected
-                  ? "var(--color-primary)"
-                  : "var(--border-color)";
               }}
             >
               <div
@@ -145,11 +129,6 @@ export const ServerRack = ({
                     height: "6px",
                     borderRadius: "50%",
                     backgroundColor: color,
-                    boxShadow: `0 0 8px ${color}`,
-                    animation:
-                      status === "stable"
-                        ? "pulse 2s ease-in-out infinite"
-                        : "none",
                   }}
                 ></div>
                 <span

@@ -41,7 +41,7 @@ function App() {
   return (
     <div
       style={{
-        padding: "2rem",
+        padding: "1.5rem",
         maxWidth: "1600px",
         margin: "0 auto",
         width: "100%",
@@ -68,6 +68,9 @@ function App() {
               System Dashboard
             </h1>
           </div>
+        </div>
+
+        <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
           <button
             className="btn"
             onClick={() => setShowCsvModal(true)}
@@ -83,9 +86,6 @@ function App() {
             Clear Notifications
           </button>
         </div>
-
-        <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
-        </div>
       </header>
 
       <LoadingError loading={loading} error={error} />
@@ -96,8 +96,8 @@ function App() {
             style={{
               display: "grid",
               gridTemplateColumns: "1fr 2.5fr",
-              gap: "1.5rem",
-              marginBottom: "2rem",
+              gap: "1.25rem",
+              marginBottom: "1.25rem",
             }}
           >
             <ServerRack
@@ -131,15 +131,15 @@ function App() {
                 </div>
                 <div
                   style={{
-                    fontSize: "2rem",
-                    fontWeight: 700,
-                    letterSpacing: "-0.025em",
+                    fontSize: "1.75rem",
+                    fontWeight: 600,
+                    letterSpacing: "-0.01em",
                   }}
                 >
                   {avg(filteredMetrics, "cpu")}
                   <span
                     style={{
-                      fontSize: "0.875rem",
+                      fontSize: "0.8125rem",
                       color: "var(--text-dim)",
                       marginLeft: "0.125rem",
                       fontWeight: 500,
@@ -179,15 +179,15 @@ function App() {
                 </div>
                 <div
                   style={{
-                    fontSize: "2rem",
-                    fontWeight: 700,
-                    letterSpacing: "-0.025em",
+                    fontSize: "1.75rem",
+                    fontWeight: 600,
+                    letterSpacing: "-0.01em",
                   }}
                 >
                   {avg(filteredMetrics, "memory")}
                   <span
                     style={{
-                      fontSize: "0.875rem",
+                      fontSize: "0.8125rem",
                       color: "var(--text-dim)",
                       marginLeft: "0.125rem",
                       fontWeight: 500,
@@ -222,15 +222,15 @@ function App() {
                 </div>
                 <div
                   style={{
-                    fontSize: "2rem",
-                    fontWeight: 700,
-                    letterSpacing: "-0.025em",
+                    fontSize: "1.75rem",
+                    fontWeight: 600,
+                    letterSpacing: "-0.01em",
                   }}
                 >
                   {maxPower}
                   <span
                     style={{
-                      fontSize: "0.875rem",
+                      fontSize: "0.8125rem",
                       color: "var(--text-dim)",
                       marginLeft: "0.125rem",
                       fontWeight: 500,
@@ -265,9 +265,9 @@ function App() {
                 </div>
                 <div
                   style={{
-                    fontSize: "2rem",
-                    fontWeight: 700,
-                    letterSpacing: "-0.025em",
+                    fontSize: "1.75rem",
+                    fontWeight: 600,
+                    letterSpacing: "-0.01em",
                     color:
                       filteredAlerts.length > 0
                         ? "var(--color-danger)"

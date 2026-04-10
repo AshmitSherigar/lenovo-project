@@ -1,16 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
-    --bg-main: #09090b;
-    --bg-card: #18181b;
-    --bg-elevated: #1e1e22;
-    --text-main: #fafafa;
+    --bg-main: #0c0c0e;
+    --bg-card: #141417;
+    --bg-elevated: #1a1a1e;
+    --text-main: #f4f4f5;
     --text-muted: #a1a1aa;
-    --text-dim: #71717a;
-    --border-color: #27272a;
-    --border-subtle: #1f1f23;
+    --text-dim: #52525b;
+    --border-color: #242427;
+    --border-subtle: #1c1c1f;
     --color-primary: #3b82f6;
-    --color-danger: #ef4444;
+    --color-danger: #f43f5e;
     --color-warning: #f59e0b;
     --color-success: #10b981;
 }
@@ -71,25 +71,19 @@ body {
 .panel {
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
 }
 
 .stat-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.25rem 1.5rem;
-    transition:
-        transform 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+    border-radius: 8px;
+    padding: 1.25rem;
+    transition: border-color 0.2s ease;
     cursor: default;
 }
 .stat-card:hover {
-    transform: translateY(-2px);
     border-color: #3f3f46;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .btn {
@@ -97,19 +91,18 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.5rem 1.25rem;
-    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
     font-weight: 500;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: background-color 0.1s ease;
     border: 1px solid var(--border-color);
-    background-color: #27272a;
+    background-color: #1a1a1e;
     color: var(--text-main);
 }
 .btn:hover {
-    background-color: #3f3f46;
-    border-color: #3f3f46;
+    background-color: #242427;
 }
 
 .btn-primary {
@@ -123,20 +116,10 @@ body {
 }
 
 .pulse-dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background-color: var(--color-success);
-    animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse {
-    0%,
-    100% {
-        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
-    }
-    50% {
-        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
-    }
 }
 
 .select-wrapper {
@@ -156,24 +139,23 @@ body {
     pointer-events: none;
 }
 .input-select {
-    padding: 0.5rem 2.5rem 0.5rem 1rem;
-    border-radius: 8px;
+    padding: 0.4rem 2rem 0.4rem 0.75rem;
+    border-radius: 6px;
     border: 1px solid var(--border-color);
-    background-color: #27272a;
+    background-color: #1a1a1e;
     color: var(--text-main);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 500;
     cursor: pointer;
     appearance: none;
-    transition: all 0.2s ease;
+    transition: background-color 0.1s ease;
 }
 .input-select:hover {
     background-color: #3f3f46;
 }
 .input-select:focus {
     outline: none;
-    border-color: var(--text-muted);
-    box-shadow: 0 0 0 3px rgba(161, 161, 170, 0.15);
+    border-color: var(--color-primary);
 }
 
 .modal-overlay {
@@ -198,12 +180,12 @@ body {
 .modal-content {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 16px;
+    border-radius: 12px;
     width: min(1280px, 94vw);
     max-height: 85vh;
     overflow-y: auto;
-    animation: modalSlideIn 0.25s ease-out;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: modalSlideIn 0.2s ease-out;
+    box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.8);
 }
 @keyframes modalSlideIn {
     from {
@@ -276,7 +258,6 @@ body {
 .input-field:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 .input-field::placeholder {
     color: var(--text-dim);
@@ -362,13 +343,13 @@ body {
 }
 
 .error-title {
-    font-size: 2.5rem;
-    font-weight: 900;
+    font-size: 2rem;
+    font-weight: 700;
     color: #fff;
-    margin-bottom: 1.5rem;
-    letter-spacing: -0.05em;
-    line-height: 1;
-    text-transform: uppercase;
+    margin-bottom: 1rem;
+    letter-spacing: -0.025ea;
+    line-height: 1.1;
+    text-transform: none;
 }
 
 .error-message {

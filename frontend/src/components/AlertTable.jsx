@@ -42,17 +42,17 @@ export const AlertTable = ({ alerts = [], onSelect }) => {
         <h2
           style={{
             margin: 0,
-            fontSize: "0.8125rem",
-            fontWeight: 500,
+            fontSize: "0.75rem",
+            fontWeight: 600,
             color: "var(--text-muted)",
             textTransform: "uppercase",
-            letterSpacing: "0.5px",
+            letterSpacing: "0.05em",
           }}
         >
           Incident Log
         </h2>
-        <span style={{ fontSize: "0.75rem", color: "var(--text-dim)" }}>
-          Displaying {sortedAlerts.length} most recent incidents
+        <span style={{ fontSize: "0.6875rem", color: "var(--text-dim)" }}>
+          {sortedAlerts.length} recent entries
         </span>
       </div>
 
@@ -105,15 +105,7 @@ export const AlertTable = ({ alerts = [], onSelect }) => {
                     style={{
                       borderBottom: "1px solid var(--border-subtle)",
                       cursor: "pointer",
-                      transition: "background-color 0.15s",
                     }}
-                    onMouseOver={(e) =>
-                      (e.currentTarget.style.backgroundColor =
-                        "rgba(255,255,255,0.02)")
-                    }
-                    onMouseOut={(e) =>
-                      (e.currentTarget.style.backgroundColor = "transparent")
-                    }
                   >
                     <td
                       style={{
@@ -145,7 +137,7 @@ export const AlertTable = ({ alerts = [], onSelect }) => {
                     </td>
                     <td
                       style={{
-                        padding: "0.625rem 1.5rem",
+                        padding: "0.5rem 1rem",
                         color: "var(--text-muted)",
                       }}
                     >
@@ -163,11 +155,11 @@ export const AlertTable = ({ alerts = [], onSelect }) => {
 };
 
 const thStyle = {
-  padding: "0.625rem 1.5rem",
+  padding: "0.5rem 1rem",
   borderBottom: "1px solid var(--border-color)",
   color: "var(--text-dim)",
-  fontWeight: 500,
-  fontSize: "0.75rem",
+  fontWeight: 600,
+  fontSize: "0.6875rem",
   textTransform: "uppercase",
-  letterSpacing: "0.5px",
+  letterSpacing: "0.05em",
 };
