@@ -55,7 +55,7 @@ const createMetric = async (req, res) => {
 
     res.status(201).json(metric);
   } catch (err) {
-    console.error("Controller Error:", err.message);
+    console.error("Metric Controller Error:", err.message);
     res.status(500).json({ error: err.message });
   }
 };
@@ -69,7 +69,7 @@ const getHistory = async (req, res) => {
       .limit(Number(limit));
     res.json(metrics);
   } catch (err) {
-    console.error("getHistory Error:", err.message);
+    console.error("getHistory Controller Error:", err.message);
     res.status(500).json({ error: err.message });
   }
 };

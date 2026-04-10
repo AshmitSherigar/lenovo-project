@@ -3,7 +3,8 @@ const csv = require('csv-parser');
 const axios = require('axios');
 const path = require('path');
 
-const filePath = path.join(__dirname, "../data/data.csv");
+const filePath = path.join(__dirname, "../data/data.csv"); // lenovo dataset
+// const filePath = path.join(__dirname, "../data/realistic_power_emergency_dataset.csv"); // custom dataset
 
 let data = [];
 
