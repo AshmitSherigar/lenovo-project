@@ -3,6 +3,7 @@ from pydantic import BaseModel
 import joblib
 import numpy as np
 import os
+import pandas as pd
 
 # Get the directory of the current script
 current_file_dir = os.path.dirname(os.path.abspath(__file__))
@@ -37,14 +38,26 @@ def load_server_model(server_id: str):
     if server_id in models_cache:
         return models_cache[server_id]
 
-    server_path = os.path.join(BASE_MODEL_PATH, server_id)
+    server_path = BASE_MODEL_PATH
 
+    print(server_path)
+    
     try:
-        model = joblib.load(os.path.join(server_path, "model.joblib"))
-        scaler = joblib.load(os.path.join(server_path, "scaler_2.joblib"))
-        threshold = joblib.load(os.path.join(server_path, "threshold_2.joblib"))
+        if(server_id == 'S1') : 
+            model = joblib.load(os.path.join(server_path, "iforest_model.joblib"))
+            scaler = joblib.load(os.path.join(server_path, "scaler.joblib"))
+            threshold = joblib.load(os.path.join(server_path, "threshold.joblib"))
+        elif(server_id == 'S2'):
+            model = joblib.load(os.path.join(server_path, "iforest_model_2.joblib"))
+            scaler = joblib.load(os.path.join(server_path, "scaler_2.joblib"))
+            threshold = joblib.load(os.path.join(server_path, "threshold_2.joblib"))
+        else:
+            model = joblib.load(os.path.join(server_path, "iforest_model_3.joblib"))
+            scaler = joblib.load(os.path.join(server_path, "scaler_3.joblib"))
+            threshold = joblib.load(os.path.join(server_path, "threshold_3.joblib"))
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Model for {server_id} not found")
+
 
     models_cache[server_id] = {
         "model": model,
@@ -59,8 +72,35 @@ def load_server_model(server_id: str):
 def predict_anomaly(metrics: ServerMetrics):
 
     server_model = load_server_model(metrics.server_id)
+    columns = [
+        'CPU_Utilization_%',
+        'Memory_Utilization_%',
+        'cpu_change',
+        'memory_change',
+        'power_change',
+        'cpu_rolling_mean',
+        'power_rolling_mean',
+        'cpu_deviation',
+        'power_deviation',
+        'hour',
+        'day_of_week'
+    ]
 
-    incoming_data = np.array([[ 
+    # incoming_data = np.array([[ 
+    #     metrics.cpu_util,
+    #     metrics.memory_util,
+    #     metrics.cpu_change,
+    #     metrics.memory_change,
+    #     metrics.power_change,
+    #     metrics.cpu_rolling_mean,
+    #     metrics.power_rolling_mean,
+    #     metrics.cpu_deviation,
+    #     metrics.power_deviation,
+    #     metrics.hour,
+    #     metrics.day_of_week
+    # ]])
+
+    incoming_data = pd.DataFrame([[
         metrics.cpu_util,
         metrics.memory_util,
         metrics.cpu_change,
@@ -72,7 +112,9 @@ def predict_anomaly(metrics: ServerMetrics):
         metrics.power_deviation,
         metrics.hour,
         metrics.day_of_week
-    ]])
+    ]], columns=columns)
+
+    print(incoming_data)
 
     scaled_data = server_model["scaler"].transform(incoming_data)
 

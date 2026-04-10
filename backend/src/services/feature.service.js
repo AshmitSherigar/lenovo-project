@@ -38,8 +38,9 @@ function getFeatures(data) {
   const date = new Date(timestamp);
 
   return {
-    cpu_util: last.cpu,
-    memory_util: last.memory,
+    server_id: serverId,
+    cpu_util: Number(last.cpu),
+    memory_util: Number(last.memory),
     cpu_change,
     memory_change,
     power_change,
