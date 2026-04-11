@@ -4,7 +4,10 @@ const { checkAnomaly } = require("../services/detection.service");
 const { getFeatures } = require("../services/feature.service");
 const { checkMLAnomaly } = require("../services/ml.service");
 const { sendAlertEmail } = require("../services/email.service");
-const { startMonitoring, stopMonitoring } = require("../services/system.monitor.service");
+const {
+  startMonitoring,
+  stopMonitoring,
+} = require("../services/system.monitor.service");
 
 let io;
 let lastAlertTime = {};
@@ -33,7 +36,8 @@ const createMetric = async (req, res) => {
       const alertData = {
         serverId: data.serverId,
         message: ruleAlert?.message || `ML anomaly`,
-        severity: ruleAlert?.severity || (mlResult?.is_anomaly ? "high" : "low"),
+        severity:
+          ruleAlert?.severity || (mlResult?.is_anomaly ? "high" : "low"),
       };
 
       await Alert.create(alertData);
@@ -45,7 +49,7 @@ const createMetric = async (req, res) => {
         await sendAlertEmail(alertData);
         lastAlertTime[data.serverId] = Date.now();
       }
-      
+
       data.alert = alertData.message;
       data.severity = alertData.severity;
     }
@@ -98,4 +102,10 @@ const stopLocalMonitoring = async (req, res) => {
   }
 };
 
-module.exports = { createMetric, setSocket, getHistory, startLocalMonitoring, stopLocalMonitoring };
+module.exports = {
+  createMetric,
+  setSocket,
+  getHistory,
+  startLocalMonitoring,
+  stopLocalMonitoring,
+};

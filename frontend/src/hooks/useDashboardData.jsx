@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { createSocket, fetchAlerts, fetchMetricsHistory, startSystemMonitoring, stopSystemMonitoring } from "../api";
+import {
+  createSocket,
+  fetchAlerts,
+  fetchMetricsHistory,
+  startSystemMonitoring,
+  stopSystemMonitoring,
+} from "../api";
 import { normalizeMetric } from "../utils";
 import { toast } from "sonner";
 
@@ -48,15 +54,24 @@ export const useDashboardData = () => {
           fetchAlerts(),
         ]);
 
-        if (metricsRes.status === "fulfilled" && Array.isArray(metricsRes.value)) {
+        if (
+          metricsRes.status === "fulfilled" &&
+          Array.isArray(metricsRes.value)
+        ) {
           setMetrics(metricsRes.value.map(normalizeMetric));
         }
 
-        if (alertsRes.status === "fulfilled" && Array.isArray(alertsRes.value)) {
+        if (
+          alertsRes.status === "fulfilled" &&
+          Array.isArray(alertsRes.value)
+        ) {
           setAlerts(alertsRes.value);
         }
 
-        if (metricsRes.status === "rejected" || alertsRes.status === "rejected") {
+        if (
+          metricsRes.status === "rejected" ||
+          alertsRes.status === "rejected"
+        ) {
           const errMsg = [metricsRes, alertsRes]
             .filter((x) => x.status === "rejected")
             .map((x) => x.reason?.message || "Internal system error")
@@ -64,7 +79,9 @@ export const useDashboardData = () => {
           setError(`Unable to synchronize dashboard data: ${errMsg}`);
         }
       } catch (e) {
-        setError(e.message || "An unexpected error occurred during initialization");
+        setError(
+          e.message || "An unexpected error occurred during initialization",
+        );
       } finally {
         setLoading(false);
       }
@@ -123,8 +140,11 @@ export const useDashboardData = () => {
   }, []);
 
   const sortedMetrics = useMemo(
-    () => [...metrics].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)),
-    [metrics]
+    () =>
+      [...metrics].sort(
+        (a, b) => new Date(a.timestamp) - new Date(b.timestamp),
+      ),
+    [metrics],
   );
 
   const lineData = useMemo(
@@ -135,7 +155,7 @@ export const useDashboardData = () => {
         memory: item.memory,
         power: item.power,
       })),
-    [sortedMetrics]
+    [sortedMetrics],
   );
 
   const alertBySeverity = useMemo(() => {

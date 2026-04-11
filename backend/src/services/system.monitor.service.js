@@ -1,4 +1,4 @@
-const si = require('systeminformation');
+const si = require("systeminformation");
 
 let monitoringInterval = null;
 let isMonitoring = false;
@@ -12,7 +12,7 @@ const getSystemMetrics = async () => {
   try {
     const cpu = await si.currentLoad();
     const mem = await si.mem();
-    
+
     return {
       cpu: Math.round(cpu.currentLoad),
       memory: Math.round((mem.used / mem.total) * 100),
@@ -20,14 +20,14 @@ const getSystemMetrics = async () => {
       timestamp: new Date().toISOString(),
     };
   } catch (err) {
-    console.error('Error collecting system metrics:', err.message);
+    console.error("Error collecting system metrics:", err.message);
     throw err;
   }
 };
 
 const startMonitoring = async () => {
   if (isMonitoring) {
-    return { error: 'Monitoring already running on this system' };
+    return { error: "Monitoring already running on this system" };
   }
 
   isMonitoring = true;
@@ -35,9 +35,9 @@ const startMonitoring = async () => {
   monitoringInterval = setInterval(async () => {
     try {
       const metrics = await getSystemMetrics();
-      
+
       const data = {
-        serverId: 'LOCAL',
+        serverId: "LOCAL",
         cpu: metrics.cpu,
         memory: metrics.memory,
         power: metrics.power,
@@ -45,14 +45,14 @@ const startMonitoring = async () => {
       };
 
       if (io) {
-        io.emit('power-data', data);
+        io.emit("power-data", data);
       }
     } catch (err) {
-      console.error('Monitoring interval error:', err.message);
+      console.error("Monitoring interval error:", err.message);
     }
   }, 5000);
 
-  return { success: true, message: 'Monitoring started' };
+  return { success: true, message: "Monitoring started" };
 };
 
 const stopMonitoring = () => {
@@ -61,7 +61,7 @@ const stopMonitoring = () => {
     monitoringInterval = null;
   }
   isMonitoring = false;
-  return { success: true, message: 'Monitoring stopped' };
+  return { success: true, message: "Monitoring stopped" };
 };
 
 module.exports = {

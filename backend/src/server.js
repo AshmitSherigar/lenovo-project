@@ -1,9 +1,9 @@
-const http = require('http');
-const app = require('./app');
-const connectDB = require('./config/db');
-const { initSocket } = require('./socket/socket');
-const { setSocket } = require('./controllers/metric.controller');
-const { setSocketInstance } = require('./services/system.monitor.service');
+const http = require("http");
+const app = require("./app");
+const connectDB = require("./config/db");
+const { initSocket } = require("./socket/socket");
+const { setSocket } = require("./controllers/metric.controller");
+const { setSocketInstance } = require("./services/system.monitor.service");
 
 connectDB();
 

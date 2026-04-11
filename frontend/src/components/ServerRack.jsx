@@ -119,9 +119,10 @@ export const ServerRack = ({
               alignItems: "center",
               justifyContent: "space-between",
               padding: "0.625rem 0.75rem",
-              backgroundColor: selectedServer === "LOCAL"
-                ? "rgba(255,255,255,0.02)"
-                : "var(--bg-card)",
+              backgroundColor:
+                selectedServer === "LOCAL"
+                  ? "rgba(255,255,255,0.02)"
+                  : "var(--bg-card)",
               border: `1px solid ${selectedServer === "LOCAL" ? "var(--color-primary)" : "var(--border-color)"}`,
               borderRadius: "6px",
               cursor: "pointer",
@@ -146,9 +147,10 @@ export const ServerRack = ({
               <span
                 style={{
                   fontWeight: selectedServer === "LOCAL" ? 600 : 500,
-                  color: selectedServer === "LOCAL"
-                    ? "var(--text-main)"
-                    : "var(--text-muted)",
+                  color:
+                    selectedServer === "LOCAL"
+                      ? "var(--text-main)"
+                      : "var(--text-muted)",
                   fontSize: "0.875rem",
                   transition: "color 0.15s",
                   flex: 1,
