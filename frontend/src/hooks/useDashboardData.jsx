@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { createSocket, fetchAlerts, fetchMetricsHistory } from "../api";
+import { createSocket, fetchAlerts, fetchMetricsHistory, startSystemMonitoring, stopSystemMonitoring } from "../api";
 import { normalizeMetric } from "../utils";
 import { toast } from "sonner";
 
@@ -8,6 +8,35 @@ export const useDashboardData = () => {
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [localSystemMetrics, setLocalSystemMetrics] = useState([]);
+  const [monitoringActive, setMonitoringActive] = useState(false);
+
+  const toggleMonitoring = async () => {
+    try {
+      if (monitoringActive) {
+        await stopSystemMonitoring();
+        setMonitoringActive(false);
+        toast.success("Monitoring stopped");
+      } else {
+        const result = await startSystemMonitoring();
+        if (result.error) {
+          toast.error("Monitoring already running on this system");
+          return;
+        }
+        setMonitoringActive(true);
+        toast.success("Monitoring started on your computer", {
+          description: "Data is being sent in real-time",
+        });
+      }
+    } catch (err) {
+      if (err.status === 400 && err.body?.error) {
+        toast.error("Monitoring already running on this system");
+      } else {
+        toast.error("Failed to fetch system metrics");
+        console.error(err);
+      }
+    }
+  };
 
   useEffect(() => {
     let socket;
@@ -50,6 +79,11 @@ export const useDashboardData = () => {
 
       onData: (incoming) => {
         const n = normalizeMetric(incoming);
+
+        // Store LOCAL metrics in separate array for CSV
+        if (incoming?.serverId === "LOCAL") {
+          setLocalSystemMetrics((prev) => [...prev.slice(-499), n]);
+        }
 
         setMetrics((prev) => [...prev.slice(-199), n]);
 
@@ -120,5 +154,8 @@ export const useDashboardData = () => {
     alertBySeverity,
     loading,
     error,
+    localSystemMetrics,
+    monitoringActive,
+    toggleMonitoring,
   };
 };

@@ -6,10 +6,20 @@ import { LoadingError } from "./components/LoadingError";
 import { ServerRack } from "./components/ServerRack";
 import { CsvAnalysisModal } from "./components/CsvAnalysisModal";
 import { useDashboardData } from "./hooks/useDashboardData";
+import { generateCSV, downloadCSV } from "./api";
 import { toast } from "sonner";
 
 function App() {
-  const { metrics, alerts, lineData, loading, error } = useDashboardData();
+  const {
+    metrics,
+    alerts,
+    lineData,
+    loading,
+    error,
+    localSystemMetrics,
+    monitoringActive,
+    toggleMonitoring,
+  } = useDashboardData();
 
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [server, setServer] = useState("ALL");
@@ -19,6 +29,21 @@ function App() {
     arr.length
       ? (arr.reduce((sum, m) => sum + (m[key] || 0), 0) / arr.length).toFixed(2)
       : "0.00";
+
+  const handleDownloadCSV = () => {
+    if (localSystemMetrics.length === 0) {
+      toast.error("No data to download", {
+        description: "Start monitoring to collect system metrics",
+      });
+      return;
+    }
+
+    const csv = generateCSV(localSystemMetrics);
+    if (csv) {
+      downloadCSV(csv, "system_metrics.csv");
+      toast.success("CSV downloaded successfully");
+    }
+  };
 
   const filteredMetrics =
     server === "ALL" ? metrics : metrics.filter((m) => m.serverId === server);
@@ -73,6 +98,37 @@ function App() {
         <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
           <button
             className="btn"
+            onClick={toggleMonitoring}
+            style={{
+              marginTop: "0.25rem",
+              backgroundColor: monitoringActive
+                ? "var(--color-success)"
+                : "var(--btn-bg)",
+              opacity: monitoringActive ? 0.8 : 1,
+            }}
+            title={
+              monitoringActive
+                ? "Click to stop monitoring"
+                : "Click to start monitoring"
+            }
+          >
+            {monitoringActive ? "Monitoring Running" : "Start Monitoring"}
+          </button>
+          <button
+            className="btn"
+            onClick={handleDownloadCSV}
+            disabled={localSystemMetrics.length === 0}
+            style={{
+              marginTop: "0.25rem",
+              opacity: localSystemMetrics.length === 0 ? 0.5 : 1,
+              cursor:
+                localSystemMetrics.length === 0 ? "not-allowed" : "pointer",
+            }}
+          >
+            Download CSV
+          </button>
+          <button
+            className="btn"
             onClick={() => setShowCsvModal(true)}
             style={{ marginTop: "0.25rem" }}
           >
@@ -106,6 +162,8 @@ function App() {
               alerts={alerts}
               selectedServer={server}
               onSelect={setServer}
+              localSystemMetrics={localSystemMetrics}
+              monitoringActive={monitoringActive}
             />
 
             <div

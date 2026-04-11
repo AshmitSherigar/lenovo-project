@@ -4,6 +4,7 @@ const { checkAnomaly } = require("../services/detection.service");
 const { getFeatures } = require("../services/feature.service");
 const { checkMLAnomaly } = require("../services/ml.service");
 const { sendAlertEmail } = require("../services/email.service");
+const { startMonitoring, stopMonitoring } = require("../services/system.monitor.service");
 
 let io;
 let lastAlertTime = {};
@@ -74,4 +75,27 @@ const getHistory = async (req, res) => {
   }
 };
 
-module.exports = { createMetric, setSocket, getHistory };
+const startLocalMonitoring = async (req, res) => {
+  try {
+    const result = await startMonitoring();
+    if (result.error) {
+      return res.status(400).json(result);
+    }
+    res.status(200).json(result);
+  } catch (err) {
+    console.error("Start Monitoring Error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const stopLocalMonitoring = async (req, res) => {
+  try {
+    const result = stopMonitoring();
+    res.status(200).json(result);
+  } catch (err) {
+    console.error("Stop Monitoring Error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+module.exports = { createMetric, setSocket, getHistory, startLocalMonitoring, stopLocalMonitoring };

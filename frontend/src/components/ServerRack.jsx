@@ -6,6 +6,8 @@ export const ServerRack = ({
   alerts = [],
   selectedServer,
   onSelect,
+  localSystemMetrics = [],
+  monitoringActive = false,
 }) => {
   const getServerHealth = (serverId) => {
     const serverAlerts = alerts.filter(
@@ -31,6 +33,20 @@ export const ServerRack = ({
     if (status === "critical") return "var(--color-danger)";
     if (status === "elevated") return "#facc15";
     return "var(--color-success)";
+  };
+
+  const getLocalSystemHealth = () => {
+    if (localSystemMetrics.length === 0) return "stable";
+    const latest = localSystemMetrics[localSystemMetrics.length - 1];
+    if (latest.cpu > 80 || latest.memory > 80) {
+      return "elevated";
+    }
+    return "stable";
+  };
+
+  const getLocalMetricValue = (key) => {
+    if (localSystemMetrics.length === 0) return "—";
+    return localSystemMetrics[localSystemMetrics.length - 1][key] || "—";
   };
 
   return (
@@ -68,6 +84,7 @@ export const ServerRack = ({
           borderRadius: "8px",
           border: "1px solid var(--border-subtle)",
           flexGrow: 1,
+          overflowY: "auto",
         }}
       >
         <div
@@ -93,6 +110,67 @@ export const ServerRack = ({
         >
           View Cluster Overview
         </div>
+
+        {monitoringActive && (
+          <div
+            onClick={() => onSelect("LOCAL")}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "0.625rem 0.75rem",
+              backgroundColor: selectedServer === "LOCAL"
+                ? "rgba(255,255,255,0.02)"
+                : "var(--bg-card)",
+              border: `1px solid ${selectedServer === "LOCAL" ? "var(--color-primary)" : "var(--border-color)"}`,
+              borderRadius: "6px",
+              cursor: "pointer",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem",
+                flex: 1,
+              }}
+            >
+              <div
+                style={{
+                  width: "6px",
+                  height: "6px",
+                  borderRadius: "50%",
+                  backgroundColor: getStatusColor(getLocalSystemHealth()),
+                }}
+              ></div>
+              <span
+                style={{
+                  fontWeight: selectedServer === "LOCAL" ? 600 : 500,
+                  color: selectedServer === "LOCAL"
+                    ? "var(--text-main)"
+                    : "var(--text-muted)",
+                  fontSize: "0.875rem",
+                  transition: "color 0.15s",
+                  flex: 1,
+                }}
+              >
+                YOUR COMPUTER
+              </span>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                gap: "0.5rem",
+                fontSize: "0.625rem",
+                color: "var(--text-muted)",
+              }}
+            >
+              <span>CPU: {getLocalMetricValue("cpu")}%</span>
+              <span>MEM: {getLocalMetricValue("memory")}%</span>
+            </div>
+          </div>
+        )}
 
         {servers.map((server) => {
           const status = getServerHealth(server);
@@ -150,6 +228,7 @@ export const ServerRack = ({
                   fontSize: "0.6875rem",
                   color: "var(--text-dim)",
                   textTransform: "capitalize",
+                  fontWeight: 500,
                 }}
               >
                 {status}

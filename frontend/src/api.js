@@ -78,6 +78,56 @@ export const uploadMetricsFile = async (file) => {
   return response.json();
 };
 
+export const startSystemMonitoring = async () => {
+  return safeFetch(`${apiBase}/api/metrics/start-monitoring`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const stopSystemMonitoring = async () => {
+  return safeFetch(`${apiBase}/api/metrics/stop-monitoring`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const generateCSV = (metrics) => {
+  if (!metrics || metrics.length === 0) {
+    return null;
+  }
+
+  const headers = ["timestamp", "cpu", "memory", "power"];
+  const rows = metrics.map((m) => [
+    m.timestamp || "",
+    m.cpu || 0,
+    m.memory || 0,
+    m.power || 0,
+  ]);
+
+  const csv = [headers, ...rows]
+    .map((row) => row.map((cell) => `"${cell}"`).join(","))
+    .join("\n");
+
+  return csv;
+};
+
+export const downloadCSV = (csvContent, filename = "system_metrics.csv") => {
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  link.setAttribute("href", url);
+  link.setAttribute("download", filename);
+  link.style.visibility = "hidden";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 export const createSocket = ({ onData, onError, onConnect, onDisconnect }) => {
   const socketUrl = apiBase || "http://localhost:5000";
   const socket = io(socketUrl, {
